@@ -86,7 +86,6 @@ public class TeleporterNetwork extends WorldSavedData
 	}
 
 
-
 	public TeleporterNode getNode(BlockPos pos, int dimension)
 	{
 		for (int i = 0; i < this.network.size(); ++i)
@@ -220,14 +219,6 @@ public class TeleporterNetwork extends WorldSavedData
 		return destinationNode;
 	}
 
-
-
-
-	private TextComponentTranslation getMessage(String messageName)
-	{
-		return new TextComponentTranslation("message." + TeleporterMod.MODID + '_' + this.getClass().getSimpleName() + '.' + messageName);
-	}
-
 	private boolean isObstructed(World world, TeleporterNode node)
 	{
 		BlockPos blockPos1 = new BlockPos(node.pos.getX(), node.pos.getY() + 1, node.pos.getZ());
@@ -247,73 +238,56 @@ public class TeleporterNetwork extends WorldSavedData
 
 	private boolean doKeyStacksMatch(ItemStack sourceKey, ItemStack destinationKey)
 	{
-		// if keys are completely different
-		if (sourceKey.isEmpty() && !destinationKey.isEmpty())
+		// if both keys are null, they match (obviously!)
+		if (sourceKey.isEmpty() && destinationKey.isEmpty())
 		{
-			return false; // skip this destination
+			return true;
 		}
-		else if (!sourceKey.isEmpty() && destinationKey.isEmpty())
+		// if one or both keys are not null...
+		else
 		{
-			return false; // skip this destination
-		}
-
-		if (!sourceKey.isEmpty() && !destinationKey.isEmpty())
-		{
-			// check if keys are the same
-			if (sourceKey.getItem().getUnlocalizedName().equals(destinationKey.getItem().getUnlocalizedName()) == false)
+			// if they're both not null...
+			if (!(sourceKey.isEmpty() || destinationKey.isEmpty()))
 			{
-				return false;
-			}
+				// ensure that the items match
+				if (sourceKey.getItem() != destinationKey.getItem()) return false;
+				// ensure that the item metadata matches
+				if (sourceKey.getItemDamage() != destinationKey.getItemDamage()) return false;
 
-			// both items are written books
-			if (sourceKey.getItem() == Items.WRITTEN_BOOK && destinationKey.getItem() == Items.WRITTEN_BOOK)
-			{
-
-				// get author and title for A as "author:title"
-				String author = sourceKey.getTagCompound().getString("author");
-				author += ":" + sourceKey.getTagCompound().getString("title");
-
-				// get author and title for B as "author:title"
-				String nodeAuthor = destinationKey.getTagCompound().getString("author");
-				nodeAuthor += ":" + destinationKey.getTagCompound().getString("title");
-				if (author.equals(nodeAuthor) == false)
-				{
-					return false;
-				}
-			}
-			else if (sourceKey.getItem() == Items.FILLED_MAP && destinationKey.getItem() == Items.FILLED_MAP)
-			{
-				// compare map value (stored in item damage)
-				if (sourceKey.getItemDamage() != destinationKey.getItemDamage())
-				{
-					// skip this destination
-					return false;
-				}
-			}
-			else
-			{
-				// item naming
-				String name = "", nodeName = "";
-				// set item A name if first item has tag compound
+				// if the source key has an NBT tag
 				if (sourceKey.hasTagCompound())
 				{
-					NBTTagCompound display = (NBTTagCompound) sourceKey.getTagCompound().getTag("display");
-					name = display.getString("Name");
+					// ensure that the destination key also has an NBT tag
+					if (!destinationKey.hasTagCompound()) return false;
+
+					// if the key items are written books
+					if (sourceKey.getItem() == Items.WRITTEN_BOOK)
+					{
+						// ensure that the book authors and titles match
+						String sourceBookNBT = sourceKey.getTagCompound().getString("author") + ":" + sourceKey.getTagCompound().getString("title");
+						String destinationBookNBT = destinationKey.getTagCompound().getString("author") + ":" + destinationKey.getTagCompound().getString("title");
+						if (!sourceBookNBT.equals(destinationBookNBT)) return false;
+					}
+					// if it's any other type of item
+					else
+					{
+						// ensure that the nbt tags match
+						if (!ItemStack.areItemStackTagsEqual(sourceKey, destinationKey)) return false;
+					}
 				}
-				// set item B name if second item has tag compound
-				if ((destinationKey.hasTagCompound()))
-				{
-					NBTTagCompound display = (NBTTagCompound) destinationKey.getTagCompound().getTag("display");
-					nodeName = display.getString("Name");
-				}
-				// compare resulting names to see if they are a unique pair
-				if (name.equals(nodeName) == false)
-				{
-					return false;
-				}
+
+				// if we're still here, everything matches
+				return true;
 			}
+
+			// if one key is null and the other is not, they don't match
+			else return false;
 		}
-		return true;
+	}
+
+	private TextComponentTranslation getMessage(String messageName)
+	{
+		return new TextComponentTranslation("message." + TeleporterMod.MODID + '_' + this.getClass().getSimpleName() + '.' + messageName);
 	}
 
 }
