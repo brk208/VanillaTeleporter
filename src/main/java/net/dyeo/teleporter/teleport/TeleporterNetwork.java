@@ -237,69 +237,51 @@ public class TeleporterNetwork extends WorldSavedData
 
 	private boolean doKeyStacksMatch(ItemStack sourceKey, ItemStack destinationKey)
 	{
-		// if keys are completely different
-		if (sourceKey == null && destinationKey != null)
+		// if both keys are null, they match (obviously!)
+		if (sourceKey == null && destinationKey == null)
 		{
-			return false; // skip this destination
+			return true;
 		}
-		else if (sourceKey != null && destinationKey == null)
+		// if one or both keys are not null...
+		else
 		{
-			return false; // skip this destination
-		}
+			// if they're both not null...
+			if (sourceKey != null && destinationKey != null)
+			{
+				// ensure that the items match
+				if (sourceKey.getItem() != destinationKey.getItem()) return false;
+				// ensure that the item metadata matches
+				if (sourceKey.getItemDamage() != destinationKey.getItemDamage()) return false;
 
-		if (sourceKey != null && destinationKey != null)
-		{
-			// check if keys are the same
-			if (sourceKey.getItem().getUnlocalizedName().equals(destinationKey.getItem().getUnlocalizedName()) == false)
-			{
-				return false;
-			}
-
-			// if both items are written books
-			if (sourceKey.getItem() == Items.WRITTEN_BOOK && destinationKey.getItem() == Items.WRITTEN_BOOK)
-			{
-				// check to see if the authors and titles match
-				String sourceAuthor = sourceKey.getTagCompound().getString("author") + ":" + sourceKey.getTagCompound().getString("title");
-				String destinationAuthor = destinationKey.getTagCompound().getString("author") + ":" + destinationKey.getTagCompound().getString("title");
-
-				if (!sourceAuthor.equals(destinationAuthor))
-				{
-					return false;
-				}
-			}
-			// if both items are filled maps
-			else if (sourceKey.getItem() == Items.FILLED_MAP && destinationKey.getItem() == Items.FILLED_MAP)
-			{
-				// check to see if the share a damage value (i.e. are duplicates of each other)
-				if (sourceKey.getItemDamage() != destinationKey.getItemDamage())
-				{
-					return false;
-				}
-			}
-			else
-			{
-				// item naming
-				String sourceName = "", destinationName = "";
-				// set item A name if first item has tag compound
+				// if the source key has an NBT tag
 				if (sourceKey.hasTagCompound())
 				{
-					NBTTagCompound display = (NBTTagCompound)sourceKey.getTagCompound().getTag("display");
-					sourceName = display.getString("Name");
+					// ensure that the destination key also has an NBT tag
+					if (!destinationKey.hasTagCompound()) return false;
+
+					// if the key items are written books
+					if (sourceKey.getItem() == Items.WRITTEN_BOOK)
+					{
+						// ensure that the book authors and titles match
+						String sourceBookNBT = sourceKey.getTagCompound().getString("author") + ":" + sourceKey.getTagCompound().getString("title");
+						String destinationBookNBT = destinationKey.getTagCompound().getString("author") + ":" + destinationKey.getTagCompound().getString("title");
+						if (!sourceBookNBT.equals(destinationBookNBT)) return false;
+					}
+					// if it's any other type of item
+					else
+					{
+						// ensure that the nbt tags match
+						if (!ItemStack.areItemStackTagsEqual(sourceKey, destinationKey)) return false;
+					}
 				}
-				// set item B name if second item has tag compound
-				if ((destinationKey.hasTagCompound()))
-				{
-					NBTTagCompound display = (NBTTagCompound)destinationKey.getTagCompound().getTag("display");
-					destinationName = display.getString("Name");
-				}
-				// compare resulting names to see if they are a unique pair
-				if (!sourceName.equals(destinationName))
-				{
-					return false;
-				}
+
+				// if we're still here, everything matches
+				return true;
 			}
+
+			// if one key is null and the other is not, they don't match
+			else return false;
 		}
-		return true;
 	}
 
 	private TextComponentTranslation getMessage(String messageName)
