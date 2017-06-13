@@ -229,11 +229,11 @@ public class BlockTeleporter extends BlockContainer
 	}
 
 	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		for ( EnumType type : EnumType.values() )
 		{
-			list.add(new ItemStack(item, 1, type.getMetadata()));
+			list.add(new ItemStack(this, 1, type.getMetadata()));
 		}
 	}
 

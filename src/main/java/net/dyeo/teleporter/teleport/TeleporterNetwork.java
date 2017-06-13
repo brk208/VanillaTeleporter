@@ -14,10 +14,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 /**
@@ -147,7 +147,7 @@ public class TeleporterNetwork extends WorldSavedData
 
 			TeleporterNode node = this.network.get(i % this.network.size());
 
-			WorldServer destinationWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(node.dimension);
+			WorldServer destinationWorld = DimensionManager.getWorld(node.dimension);
 			if (destinationWorld != null)
 			{
 				// if this node matches the source node, continue
@@ -226,7 +226,7 @@ public class TeleporterNetwork extends WorldSavedData
 		Block block1 = world.getBlockState(blockPos1).getBlock();
 		Block block2 = world.getBlockState(blockPos2).getBlock();
 
-		if (block1.isPassable(world, blockPos1) && block2.isPassable(world, blockPos2))
+		if (block1.blocksMovement(world, blockPos1) && block2.blocksMovement(world, blockPos2)) // this method is reversed - i.e. returns true if movement is NOT blocked
 		{
 			return false;
 		}

@@ -5,7 +5,7 @@ import net.dyeo.teleporter.tileentity.TileEntityTeleporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.DimensionManager;
 
 
 /**
@@ -62,7 +62,7 @@ public class TeleporterNode
 
 	public TileEntityTeleporter getTileEntity()
 	{
-		TileEntity result = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(this.dimension).getTileEntity(this.pos);
+		TileEntity result = DimensionManager.getWorld(this.dimension).getTileEntity(this.pos);
 		if (result instanceof TileEntityTeleporter) return (TileEntityTeleporter) result;
 		else return null;
 	}

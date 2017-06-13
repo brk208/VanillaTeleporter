@@ -11,12 +11,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -97,8 +97,8 @@ public class TeleporterUtility
 	 */
 	private static boolean transferPlayerToDimension(EntityPlayerMP srcPlayer, double posX, double posY, double posZ, float yaw, float pitch, int dstDimension)
 	{
-		WorldServer srcWorldServer = srcPlayer.mcServer.worldServerForDimension(srcPlayer.dimension);
-		WorldServer dstWorldServer = srcPlayer.mcServer.worldServerForDimension(dstDimension);
+		WorldServer srcWorldServer = DimensionManager.getWorld(srcPlayer.dimension);
+		WorldServer dstWorldServer = DimensionManager.getWorld(dstDimension);
 
 		// fire player change dimension event and check that action is valid before continuing
 		if (!net.minecraftforge.common.ForgeHooks.onTravelToDimension(srcPlayer, dstDimension)) return false;
@@ -162,9 +162,8 @@ public class TeleporterUtility
 	{
 		int srcDimension = srcEntity.world.provider.getDimension();
 
-		MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-		WorldServer srcWorldServer = minecraftServer.worldServerForDimension(srcDimension);
-		WorldServer dstWorldServer = minecraftServer.worldServerForDimension(dstDimension);
+		WorldServer srcWorldServer = DimensionManager.getWorld(srcDimension);
+		WorldServer dstWorldServer = DimensionManager.getWorld(dstDimension);
 
 		if (dstWorldServer != null)
 		{
