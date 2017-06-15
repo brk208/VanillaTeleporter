@@ -226,7 +226,7 @@ public class TeleporterNetwork extends WorldSavedData
 		Block block1 = world.getBlockState(blockPos1).getBlock();
 		Block block2 = world.getBlockState(blockPos2).getBlock();
 
-		if (block1.blocksMovement(world, blockPos1) && block2.blocksMovement(world, blockPos2)) // this method is reversed - i.e. returns true if movement is NOT blocked
+		if (block1.isPassable(world, blockPos1) && block2.isPassable(world, blockPos2))
 		{
 			return false;
 		}
