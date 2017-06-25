@@ -20,7 +20,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ModBlocks
 {
@@ -30,8 +30,8 @@ public class ModBlocks
 
 	public static void registerBlocks()
 	{
-		GameRegistry.register(TELEPORTER);
-		GameRegistry.register(new ItemBlockTeleporter(TELEPORTER).setRegistryName(TELEPORTER.getRegistryName()));
+		ForgeRegistries.BLOCKS.register(TELEPORTER);
+		ForgeRegistries.ITEMS.register(new ItemBlockTeleporter(TELEPORTER).setRegistryName(TELEPORTER.getRegistryName()));
 	}
 
 
@@ -146,7 +146,7 @@ public class ModBlocks
 				}
 			}
 
-			GameRegistry.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(name)));
+			ForgeRegistries.RECIPES.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(name)));
 		}
 		catch (Exception ex)
 		{

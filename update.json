@@ -1,8 +1,8 @@
 {
 	"homepage": "https://minecraft.curseforge.com/projects/vanilla-inspired-teleporters/files",
 	"promos": {
-		"1.12-latest": "1.6.3-beta1",
-		"1.12-recommended": "1.6.3-beta1",
+		"1.12-latest": "1.6.3-beta2",
+		"1.12-recommended": "1.6.3-beta2",
 		"1.11.2-latest": "1.6.2",
 		"1.11.2-recommended": "1.6.2",
 		"1.11-latest": "1.6.2",
@@ -17,6 +17,7 @@
 		"1.7.10-recommended": "1.6.2"
 	},
 	"1.12": {
+		"1.6.3-beta2": "Changed registrations to work with Forge 2363 and later",
 		"1.6.3-beta1": "Changed recipe registration to work with Forge 2324 and later",
 		"1.6.2": "Initial 1.12 update"
 	},

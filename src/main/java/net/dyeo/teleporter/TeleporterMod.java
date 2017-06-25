@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 
-@Mod(modid = TeleporterMod.MODID, name = TeleporterMod.NAME, version = TeleporterMod.VERSION, updateJSON = TeleporterMod.UPDATEJSON, dependencies = "required-after:forge@[14.21.0.2324,);")
+@Mod(modid = TeleporterMod.MODID, name = TeleporterMod.NAME, version = TeleporterMod.VERSION, updateJSON = TeleporterMod.UPDATEJSON, dependencies = "required-after:forge@[14.21.0.2363,);")
 public class TeleporterMod
 {
 
