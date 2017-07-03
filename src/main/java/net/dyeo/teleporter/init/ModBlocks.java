@@ -58,22 +58,32 @@ public class ModBlocks
 		if (ModConfiguration.useDiamonds == true)
 		{
 			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 0),
-					new Object[] { "AAA", "DCD", "EBE", 'A', Blocks.GLASS, 'B', Items.ENDER_PEARL, 'C',
-							Blocks.REDSTONE_BLOCK, 'D', Blocks.IRON_BLOCK, 'E', Items.DIAMOND });
-
+				new Object[] {
+					"AAA", "DCD", "EBE",
+					'A', Blocks.GLASS, 'B', Items.ENDER_PEARL, 'C', Blocks.REDSTONE_BLOCK, 'D', Blocks.IRON_BLOCK, 'E', Items.DIAMOND
+				}
+			);
 			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 1),
-					new Object[] { "AAA", "DCD", "EBE", 'A', Blocks.GLASS, 'B', Items.ENDER_EYE, 'C', Blocks.GLOWSTONE,
-							'D', Blocks.OBSIDIAN, 'E', Items.DIAMOND });
+				new Object[] {
+					"AAA", "DCD", "EBE",
+					'A', Blocks.GLASS, 'B', Items.ENDER_EYE, 'C', Blocks.GLOWSTONE, 'D', Blocks.OBSIDIAN, 'E', Items.DIAMOND
+				}
+			);
 		}
 		else
 		{
 			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 0),
-					new Object[] { "AAA", "DCD", "DBD", 'A', Blocks.GLASS, 'B', Items.ENDER_PEARL, 'C',
-							Blocks.REDSTONE_BLOCK, 'D', Blocks.IRON_BLOCK });
-
+				new Object[] {
+					"AAA", "DCD", "DBD",
+					'A', Blocks.GLASS, 'B', Items.ENDER_PEARL, 'C', Blocks.REDSTONE_BLOCK, 'D', Blocks.IRON_BLOCK
+				}
+			);
 			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 1),
-					new Object[] { "AAA", "DCD", "DBD", 'A', Blocks.GLASS, 'B', Items.ENDER_EYE, 'C', Blocks.GLOWSTONE,
-							'D', Blocks.OBSIDIAN });
+				new Object[] {
+					"AAA", "DCD", "DBD",
+					'A', Blocks.GLASS, 'B', Items.ENDER_EYE, 'C', Blocks.GLOWSTONE, 'D', Blocks.OBSIDIAN
+				}
+			);
 		}
 	}
 
@@ -146,7 +156,7 @@ public class ModBlocks
 				}
 			}
 
-			ForgeRegistries.RECIPES.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(name)));
+			ForgeRegistries.RECIPES.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(TeleporterMod.MODID, name)));
 		}
 		catch (Exception ex)
 		{
