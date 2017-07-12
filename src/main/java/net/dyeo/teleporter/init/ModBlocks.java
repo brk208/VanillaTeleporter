@@ -1,7 +1,6 @@
 package net.dyeo.teleporter.init;
 
 import java.util.Map;
-import java.util.UUID;
 import com.google.common.collect.Maps;
 import net.dyeo.teleporter.TeleporterMod;
 import net.dyeo.teleporter.block.BlockTeleporter;
@@ -9,8 +8,6 @@ import net.dyeo.teleporter.block.BlockTeleporter.EnumType;
 import net.dyeo.teleporter.common.config.ModConfiguration;
 import net.dyeo.teleporter.item.ItemBlockTeleporter;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -20,7 +17,15 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 public class ModBlocks
 {
@@ -28,42 +33,47 @@ public class ModBlocks
 	public static final Block TELEPORTER = new BlockTeleporter().setRegistryName("teleporter").setUnlocalizedName("teleporter");
 
 
-	public static void registerBlocks()
+	@EventBusSubscriber(modid = TeleporterMod.MODID)
+	public static class EventHandlers
 	{
-		ForgeRegistries.BLOCKS.register(TELEPORTER);
-		ForgeRegistries.ITEMS.register(new ItemBlockTeleporter(TELEPORTER).setRegistryName(TELEPORTER.getRegistryName()));
-	}
 
-
-	public static void registerBlockVariants()
-	{
-		ModelBakery.registerItemVariants(Item.getItemFromBlock(ModBlocks.TELEPORTER),
-			new ResourceLocation(TeleporterMod.MODID, EnumType.REGULAR.getRegistryName()),
-			new ResourceLocation(TeleporterMod.MODID, EnumType.ENDER.getRegistryName())
-		);
-	}
-
-	public static void registerInventoryModels()
-	{
-		Item item = Item.getItemFromBlock(TELEPORTER);
-		for ( EnumType type : EnumType.values() )
+		@SubscribeEvent
+		public static void registerBlocks(final RegistryEvent.Register<Block> event)
 		{
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, type.getMetadata(), new ModelResourceLocation(TeleporterMod.MODID + ":" + type.getRegistryName(), "inventory"));
+			event.getRegistry().register(TELEPORTER);
+		}
+
+		@SubscribeEvent
+		public static void registerItems(final RegistryEvent.Register<Item> event)
+		{
+			event.getRegistry().register(new ItemBlockTeleporter(TELEPORTER).setRegistryName(TELEPORTER.getRegistryName()));
+		}
+
+		@SideOnly(Side.CLIENT)
+		@SubscribeEvent
+		public static void onModelRegistry(final ModelRegistryEvent event)
+		{
+			Item item = Item.getItemFromBlock(TELEPORTER);
+			for ( EnumType type : EnumType.values() )
+			{
+				ModelLoader.setCustomModelResourceLocation(item, type.getMetadata(), new ModelResourceLocation(TeleporterMod.MODID + ":" + type.getRegistryName(), "inventory"));
+			}
 		}
 	}
+
 
 
 	public static void registerCraftingRecipes()
 	{
 		if (ModConfiguration.useDiamonds == true)
 		{
-			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 0),
+			addShapedRecipe("teleporter", new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 0),
 				new Object[] {
 					"AAA", "DCD", "EBE",
 					'A', Blocks.GLASS, 'B', Items.ENDER_PEARL, 'C', Blocks.REDSTONE_BLOCK, 'D', Blocks.IRON_BLOCK, 'E', Items.DIAMOND
 				}
 			);
-			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 1),
+			addShapedRecipe("ender_teleporter", new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 1),
 				new Object[] {
 					"AAA", "DCD", "EBE",
 					'A', Blocks.GLASS, 'B', Items.ENDER_EYE, 'C', Blocks.GLOWSTONE, 'D', Blocks.OBSIDIAN, 'E', Items.DIAMOND
@@ -72,13 +82,13 @@ public class ModBlocks
 		}
 		else
 		{
-			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 0),
+			addShapedRecipe("teleporter", new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 0),
 				new Object[] {
 					"AAA", "DCD", "DBD",
 					'A', Blocks.GLASS, 'B', Items.ENDER_PEARL, 'C', Blocks.REDSTONE_BLOCK, 'D', Blocks.IRON_BLOCK
 				}
 			);
-			addShapedRecipe(new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 1),
+			addShapedRecipe("ender_teleporter", new ItemStack(ModBlocks.TELEPORTER, ModConfiguration.numTeleporters, 1),
 				new Object[] {
 					"AAA", "DCD", "DBD",
 					'A', Blocks.GLASS, 'B', Items.ENDER_EYE, 'C', Blocks.GLOWSTONE, 'D', Blocks.OBSIDIAN
@@ -88,12 +98,11 @@ public class ModBlocks
 	}
 
 
-
-	private static void addShapedRecipe(ItemStack stack, Object... recipeComponents)
+	private static void addShapedRecipe(String name, ItemStack stack, Object... recipeComponents)
 	{
 		try
 		{
-			String name = UUID.randomUUID().toString();
+			name = TeleporterMod.MODID + ":" + name;
 			String s = "";
 			int i = 0;
 			int j = 0;
@@ -156,7 +165,7 @@ public class ModBlocks
 				}
 			}
 
-			ForgeRegistries.RECIPES.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(TeleporterMod.MODID, name)));
+			ForgeRegistries.RECIPES.register(new ShapedRecipes(name, j, k, aitemstack, stack).setRegistryName(new ResourceLocation(name)));
 		}
 		catch (Exception ex)
 		{
